@@ -54,13 +54,17 @@
         
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 60px;
             font-family: inherit;
         }
         
         .button-group {
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
             margin: 30px 0;
+            flex-wrap: nowrap;
         }
         
         button {
@@ -71,8 +75,10 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            margin: 0 10px;
+            margin: 0;
             transition: background-color 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         button:hover {
@@ -118,7 +124,7 @@
             max-height: 400px;
             border: 2px solid #ddd;
             border-radius: 6px;
-            margin: 20px 0;
+            margin: 20px auto;
             display: none;
         }
         
@@ -136,17 +142,13 @@
     <div class="container">
         <h1>🎨 Anan's Sketchbook 生成器</h1>
         
-        <div class="api-info">
-            <strong>API信息：</strong> 这是一个基于Flask的图片生成API，支持文本和表情的组合生成。
-        </div>
-        
         <form id="generateForm">
             <div class="form-group">
                 <label for="text">文本内容：</label>
                 <textarea 
                     id="text" 
                     name="text" 
-                    placeholder="请输入要显示的文本内容...&#10;&#10;提示：&#10;- 如果文本中包含表情标签（如 #开心#），会自动识别并使用对应的底图&#10;- 也可以在下方选择表情"
+                    placeholder="请输入要显示的文本内容..."
                 ></textarea>
             </div>
             
@@ -233,7 +235,7 @@
             } else {
                 loading.style.display = 'none';
                 generateBtn.disabled = false;
-                generateBtn.textContent = '🎯 生成图片';
+                generateBtn.textContent = '🎯 生成';
             }
         }
         
