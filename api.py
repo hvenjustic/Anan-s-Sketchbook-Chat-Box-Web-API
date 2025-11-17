@@ -250,6 +250,16 @@ def process_text_and_image(text: str, image: Optional[Image.Image], emotion: Opt
             return None
 
 
+@app.route('/')
+def index():
+    """提供前端页面"""
+    try:
+        with open('index.html', 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return "前端页面未找到，请确保index.html文件存在", 404
+
+
 @app.route('/generate', methods=['POST'])
 def generate_image():
     """
@@ -325,6 +335,7 @@ def generate_image():
 
 if __name__ == '__main__':
     logging.info("启动Web API服务器...")
-    logging.info("生成图片: http://localhost:5000/generate?text=你好世界")
+    logging.info("前端页面: http://localhost:5000/")
+    logging.info("API端点: http://localhost:5000/generate")
     app.run(host='0.0.0.0', port=5000, debug=False)
 
