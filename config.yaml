@@ -37,3 +37,7 @@ use_base_overlay: true
 
 # 日志记录等级, 可选值有 "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"
 logging_level: "INFO"
+
+# Web服务器配置
+server_host: "0.0.0.0"  # 服务器监听地址，0.0.0.0 表示监听所有网络接口
+server_port: 5000        # 服务器端口号

@@ -27,6 +27,10 @@ class Config(BaseModel):
     """日志记录等级"""
     text_wrap_algorithm: str = "original"
     """文本换行算法，可选值："original"(原始算法), "knuth_plass"(改进的Knuth-Plass算法)"""
+    server_host: str = "0.0.0.0"
+    """服务器监听地址，0.0.0.0 表示监听所有网络接口"""
+    server_port: int = 5000
+    """服务器端口号"""
 
     class Config:
         arbitrary_types_allowed = True

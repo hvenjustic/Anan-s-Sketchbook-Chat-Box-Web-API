@@ -170,7 +170,7 @@
             </div>
             
             <div class="button-group">
-                <button type="submit" id="generateBtn">🎯 生成图片</button>
+                <button type="submit" id="generateBtn">🎯 生成</button>
                 <button type="button" id="clearBtn">🗑️ 清空</button>
             </div>
         </form>
@@ -188,8 +188,8 @@
     </div>
 
     <script>
-        // 配置 - 使用指定服务器域名
-        const API_BASE_URL = 'https://www.hvenjustic.com:5000';
+        // 配置 - 从服务器获取API地址
+        let API_BASE_URL = 'http://localhost:5000';
         
         // DOM 元素
         const form = document.getElementById('generateForm');
@@ -315,7 +315,14 @@
                 
             } catch (err) {
                 console.error('生成图片错误:', err);
-                showMessage(error, `❌ ${err.message}`, 'error');
+                // 处理网络错误
+                if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    showMessage(error, '❌ 无法连接到服务器，请确保后端服务正在运行（http://localhost:5000）', 'error');
+                } else if (err.message === 'Failed to fetch') {
+                    showMessage(error, '❌ 网络请求失败，请检查：\n1. 后端服务是否已启动\n2. 服务器地址是否正确（http://localhost:5000）\n3. 防火墙是否阻止了连接', 'error');
+                } else {
+                    showMessage(error, `❌ ${err.message}`, 'error');
+                }
             } finally {
                 setLoading(false);
             }
@@ -344,9 +351,26 @@
         form.addEventListener('submit', generateImage);
         clearBtn.addEventListener('click', clearForm);
         
+        // 从服务器获取配置
+        async function loadServerConfig() {
+            try {
+                const response = await fetch('/api/config');
+                if (response.ok) {
+                    const config = await response.json();
+                    API_BASE_URL = config.server_url;
+                    console.log('已从服务器获取配置，API 基础URL:', API_BASE_URL);
+                } else {
+                    console.warn('无法获取服务器配置，使用默认地址:', API_BASE_URL);
+                }
+            } catch (err) {
+                console.warn('获取服务器配置失败，使用默认地址:', API_BASE_URL, err);
+            }
+        }
+        
         // 页面加载完成后的初始化
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('Anan\'s Sketchbook Generator 已加载');
+            await loadServerConfig();
             console.log('API 基础URL:', API_BASE_URL);
         });
         

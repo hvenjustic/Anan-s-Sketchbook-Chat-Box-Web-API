@@ -10,6 +10,7 @@ import urllib.parse
 import uuid
 from typing import Optional
 from flask import Flask, request, send_file, jsonify
+from flask_cors import CORS
 from PIL import Image
 
 from config_loader import load_config
@@ -17,6 +18,8 @@ from image_fit_paste import paste_image_auto
 from text_fit_draw import draw_text_auto
 
 app = Flask(__name__)
+# 启用CORS支持，允许跨域请求
+CORS(app, resources={r"/*": {"origins": "*"}})
 config = load_config()
 
 # 配置日志
@@ -333,9 +336,19 @@ def generate_image():
         }), 500
 
 
+@app.route('/api/config', methods=['GET'])
+def get_config():
+    """返回服务器配置信息（供前端使用）"""
+    return jsonify({
+        'server_url': f'http://localhost:{config.server_port}',
+        'api_url': f'http://localhost:{config.server_port}/generate'
+    })
+
+
 if __name__ == '__main__':
     logging.info("启动Web API服务器...")
-    logging.info("前端页面: http://localhost:5000/")
-    logging.info("API端点: http://localhost:5000/generate")
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    server_url = f"http://localhost:{config.server_port}"
+    logging.info(f"前端页面: {server_url}/")
+    logging.info(f"API端点: {server_url}/generate")
+    app.run(host=config.server_host, port=config.server_port, debug=False)
 
