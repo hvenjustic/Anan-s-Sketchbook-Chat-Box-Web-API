@@ -1,0 +1,4 @@
+Pillow>=12.0.0
+pydantic
+PyYAML>=6.0
+Flask>=2.0.0
