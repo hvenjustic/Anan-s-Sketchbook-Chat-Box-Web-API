@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # filename: text_fit_draw.py
 import os
 from io import BytesIO

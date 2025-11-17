@@ -90,14 +90,14 @@ http://localhost:5000/generate?text=你好世界
 curl "http://localhost:5000/generate?text=你好世界" --output test.png
 ```
 
-### 方法3: 使用 Python 测试
+### 3: 使用 Python 测试
 
 创建 `test.py` 文件：
 
 ```python
 import requests
 
-response = requests.get("http://localhost:5000/generate", params={
+response = requests.post("http://localhost:5000/generate", json={
     "text": "你好世界",
     "emotion": "#开心#"
 })
@@ -115,6 +115,26 @@ else:
 ```bash
 python test.py
 ```
+
+### 4: 使用前端页面
+
+项目提供了美观的前端界面：
+
+1. 在浏览器中打开 `index.html` 文件
+2. 或者使用本地HTTP服务器：
+   ```bash
+   python -m http.server 8000
+   # 然后访问 http://localhost:8000
+   ```
+
+前端页面功能：
+- 文本输入框
+- 表情选择器
+- 一键生成
+- 图片预览
+- 下载功能
+
+**注意**：前端页面使用POST方法调用API，与URL参数方式不同。
 
 ## 常见问题
 

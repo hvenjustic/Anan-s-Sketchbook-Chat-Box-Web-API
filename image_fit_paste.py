@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # filename: image_fit_paste.py
 import os
 from io import BytesIO

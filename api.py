@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Web API 服务器，提供图片生成接口
 """
@@ -6,6 +7,7 @@ import logging
 import base64
 import urllib.request
 import urllib.parse
+import uuid
 from typing import Optional
 from flask import Flask, request, send_file, jsonify
 from PIL import Image
@@ -248,12 +250,12 @@ def process_text_and_image(text: str, image: Optional[Image.Image], emotion: Opt
             return None
 
 
-@app.route('/generate', methods=['GET'])
+@app.route('/generate', methods=['POST'])
 def generate_image():
     """
     生成图片的API端点
     
-    URL参数:
+    JSON Body参数:
         text: 文本内容（可选）
         image_url: 图片URL或base64编码的图片数据（可选）
         emotion: 表情标签，如 #普通#、#开心# 等（可选）
@@ -262,16 +264,20 @@ def generate_image():
         生成的PNG图片，或错误信息（JSON格式）
     
     示例:
-        GET /generate?text=你好世界
-        GET /generate?text=你好&emotion=#开心#
-        GET /generate?image_url=https://example.com/image.png
-        GET /generate?text=测试&image_url=data:image/png;base64,iVBORw0KG...
+        POST /generate
+        Body: {"text": "你好世界", "emotion": "#开心#"}
     """
     try:
-        # 获取URL参数
-        text = request.args.get('text', '').strip()
-        image_url = request.args.get('image_url', '').strip()
-        emotion = request.args.get('emotion', '').strip()
+        # 获取JSON数据
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'error': '请提供JSON格式的请求体'
+            }), 400
+        
+        text = data.get('text', '').strip()
+        image_url = data.get('image_url', '').strip()
+        emotion = data.get('emotion', '').strip()
         
         # 如果没有提供任何内容，返回错误
         if not text and not image_url:
@@ -299,11 +305,15 @@ def generate_image():
                 'error': '生成图片失败，请检查参数是否正确'
             }), 500
         
-        # 返回图片
+        # 生成UUID文件名
+        filename = f"{uuid.uuid4()}.png"
+        
+        # 返回图片，设置Content-Disposition头以支持下载
         return send_file(
             io.BytesIO(png_bytes),
             mimetype='image/png',
-            as_attachment=False
+            as_attachment=True,
+            download_name=filename
         )
         
     except Exception as e:

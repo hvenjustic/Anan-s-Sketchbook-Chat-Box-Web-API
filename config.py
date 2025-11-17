@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pydantic import BaseModel
 from typing import Tuple, List, Dict
 # 本文件中包含了各种参数, 可以进行调整
