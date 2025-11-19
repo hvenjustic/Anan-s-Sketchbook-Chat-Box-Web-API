@@ -2,7 +2,7 @@ module.exports = {
     apps: [
         {
             // 应用名称
-            name: 'anan-chatbox-api',
+            name: 'strawberry-bear-api',
             // Python 脚本路径
             script: 'api.py',
             // 使用 python3 作为解释器
