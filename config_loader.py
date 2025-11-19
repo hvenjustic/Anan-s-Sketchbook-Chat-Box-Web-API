@@ -21,7 +21,7 @@ class Config(BaseModel):
     """文本框右下角坐标"""
     base_overlay_file: str = os.path.join("BaseImages", "base_overlay.png")
     """底图置顶图层文件路径"""
-    use_base_overlay: bool = True
+    use_base_overlay: bool = False
     """是否使用底图置顶图层"""
     logging_level: str = "INFO"
     """日志记录等级"""
@@ -29,7 +29,7 @@ class Config(BaseModel):
     """文本换行算法，可选值："original"(原始算法), "knuth_plass"(改进的Knuth-Plass算法)"""
     server_host: str = "0.0.0.0"
     """服务器监听地址，0.0.0.0 表示监听所有网络接口"""
-    server_port: int = 5000
+    server_port: int = 5001
     """服务器端口号"""
 
     class Config:

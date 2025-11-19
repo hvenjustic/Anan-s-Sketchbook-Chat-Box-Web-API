@@ -30,7 +30,7 @@ curl -X POST "https://www.hvenjustic.com:5000/generate" \
 ```python
 import requests
 
-response = requests.post("https://www.hvenjustic.com:5000/generate", json={
+response = requests.post("https://www.hvenjustic.com:5001/generate", json={
     "text": "你好世界",
     "emotion": "#开心#"
 })
@@ -41,7 +41,7 @@ with open("result.png", "wb") as f:
 
 **JavaScript示例**：
 ```javascript
-fetch('https://www.hvenjustic.com:5000/generate', {
+fetch('https://www.hvenjustic.com:5001/generate', {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({text: '你好世界', emotion: '#开心#'})
@@ -60,7 +60,7 @@ fetch('https://www.hvenjustic.com:5000/generate', {
 ## 生产部署
 ```bash
 pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 api:app
+gunicorn -w 4 -b 0.0.0.0:5001 api:app
 ```
 
 ## 常见问题
