@@ -10,16 +10,16 @@ class Config(BaseModel):
     font_file: str = "font.ttf"
     """字体文件路径"""
     baseimage_mapping: Dict[str, str] = {
-        "#普通#": "BaseImages\\base.png"
+        "#普通#": os.path.join("BaseImages", "base.png")
     }
     """差分表情映射字典"""
-    baseimage_file: str = "BaseImages\\base.png"
+    baseimage_file: str = os.path.join("BaseImages", "base.png")
     """默认底图文件路径"""
     text_box_topleft: Tuple[int, int] = (119, 450)
     """文本框左上角坐标"""
     image_box_bottomright: Tuple[int, int] = (398, 625)
     """文本框右下角坐标"""
-    base_overlay_file: str = "BaseImages\\base_overlay.png"
+    base_overlay_file: str = os.path.join("BaseImages", "base_overlay.png")
     """底图置顶图层文件路径"""
     use_base_overlay: bool = True
     """是否使用底图置顶图层"""
@@ -60,6 +60,30 @@ def load_config(config_file: str = "config.yaml") -> Config:
     
     if 'image_box_bottomright' in config_data and isinstance(config_data['image_box_bottomright'], list):
         config_data['image_box_bottomright'] = tuple(config_data['image_box_bottomright'])
+    
+    # 规范化文件路径，确保跨平台兼容（将 \\ 转换为当前系统的路径分隔符）
+    def normalize_path(path: str) -> str:
+        """将路径中的反斜杠转换为当前系统的路径分隔符"""
+        if isinstance(path, str):
+            # 将 Windows 风格的反斜杠转换为当前系统的路径分隔符
+            normalized = path.replace('\\', os.sep)
+            return os.path.normpath(normalized)
+        return path
+    
+    path_fields = ['font_file', 'baseimage_file', 'base_overlay_file']
+    for field in path_fields:
+        if field in config_data and isinstance(config_data[field], str):
+            config_data[field] = normalize_path(config_data[field])
+    
+    # 规范化 baseimage_mapping 中的所有路径
+    if 'baseimage_mapping' in config_data and isinstance(config_data['baseimage_mapping'], dict):
+        normalized_mapping = {}
+        for key, value in config_data['baseimage_mapping'].items():
+            if isinstance(value, str):
+                normalized_mapping[key] = normalize_path(value)
+            else:
+                normalized_mapping[key] = value
+        config_data['baseimage_mapping'] = normalized_mapping
     
     # 创建并返回配置对象
     return Config(**config_data)

@@ -339,15 +339,27 @@ def generate_image():
 @app.route('/api/config', methods=['GET'])
 def get_config():
     """返回服务器配置信息（供前端使用）"""
+    # 根据请求的协议（HTTP/HTTPS）返回正确的 URL
+    # 如果通过反向代理访问，使用请求头中的信息
+    scheme = request.headers.get('X-Forwarded-Proto', request.scheme)
+    host = request.headers.get('X-Forwarded-Host', request.host.split(':')[0])
+    
+    # 如果使用标准端口，不显示端口号；否则显示端口
+    if (scheme == 'https' and request.environ.get('SERVER_PORT') == '443') or \
+       (scheme == 'http' and request.environ.get('SERVER_PORT') == '80'):
+        base_url = f'{scheme}://{host}'
+    else:
+        base_url = f'{scheme}://{host}:{config.server_port}'
+    
     return jsonify({
-        'server_url': f'http://localhost:{config.server_port}',
-        'api_url': f'http://localhost:{config.server_port}/generate'
+        'server_url': base_url,
+        'api_url': f'{base_url}/generate'
     })
 
 
 if __name__ == '__main__':
     logging.info("启动Web API服务器...")
-    server_url = f"http://localhost:{config.server_port}"
+    server_url = f"http://www.hvenjustic.top:{config.server_port}"
     logging.info(f"前端页面: {server_url}/")
     logging.info(f"API端点: {server_url}/generate")
     app.run(host=config.server_host, port=config.server_port, debug=False)

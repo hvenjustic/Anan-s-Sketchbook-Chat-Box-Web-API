@@ -191,7 +191,7 @@
 
     <script>
         // 配置 - 从服务器获取API地址
-        let API_BASE_URL = 'http://localhost:5000';
+        let API_BASE_URL = 'http://www.hvenjustic.top:5000';
         
         // DOM 元素
         const form = document.getElementById('generateForm');
@@ -319,9 +319,9 @@
                 console.error('生成图片错误:', err);
                 // 处理网络错误
                 if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                    showMessage(error, '❌ 无法连接到服务器，请确保后端服务正在运行（http://localhost:5000）', 'error');
+                    showMessage(error, '❌ 无法连接到服务器，请确保后端服务正在运行（http://www.hvenjustic.top:5000）', 'error');
                 } else if (err.message === 'Failed to fetch') {
-                    showMessage(error, '❌ 网络请求失败，请检查：\n1. 后端服务是否已启动\n2. 服务器地址是否正确（http://localhost:5000）\n3. 防火墙是否阻止了连接', 'error');
+                    showMessage(error, '❌ 网络请求失败，请检查：\n1. 后端服务是否已启动\n2. 服务器地址是否正确（http://www.hvenjustic.top:5000）\n3. 防火墙是否阻止了连接', 'error');
                 } else {
                     showMessage(error, `❌ ${err.message}`, 'error');
                 }
