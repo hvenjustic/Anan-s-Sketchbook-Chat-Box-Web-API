@@ -141,6 +141,116 @@
             font-size: 14px;
             color: #1565c0;
         }
+
+        /* 自定义下拉框样式 */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            user-select: none;
+        }
+
+        .custom-select:hover {
+            border-color: #bbb;
+        }
+
+        .custom-select.active {
+            border-color: #4CAF50;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .custom-select-text {
+            flex: 1;
+            color: #333;
+        }
+
+        .custom-select-arrow {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #666;
+            transition: transform 0.3s;
+            margin-left: 10px;
+        }
+
+        .custom-select.active .custom-select-arrow {
+            transform: rotate(180deg);
+        }
+
+        .custom-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 2px solid #4CAF50;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .custom-select-dropdown.show {
+            display: block;
+        }
+
+        .custom-select-option {
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-select-option:last-child {
+            border-bottom: none;
+        }
+
+        .custom-select-option:hover {
+            background-color: #e3f2fd;
+        }
+
+        .custom-select-option.selected {
+            background-color: #e3f2fd;
+            font-weight: bold;
+        }
+
+        .custom-select-option-label {
+            flex: 1;
+            color: #333;
+        }
+
+        .custom-select-option-desc {
+            color: #999;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        /* 隐藏原生select */
+        select#emotion {
+            display: none;
+        }
     </style>
 </head>
 
@@ -171,6 +281,53 @@
                     <option value="#惊讶#">惊讶</option>
                     <option value="#哭泣#">哭泣</option>
                 </select>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" id="customEmotionSelect">
+                        <span class="custom-select-text">默认表情</span>
+                        <span class="custom-select-arrow"></span>
+                    </div>
+                    <div class="custom-select-dropdown" id="customEmotionDropdown">
+                        <div class="custom-select-option selected" data-value="">
+                            <span class="custom-select-option-label">默认表情</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#普通#">
+                            <span class="custom-select-option-label">普通</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#开心#">
+                            <span class="custom-select-option-label">开心</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#生气#">
+                            <span class="custom-select-option-label">生气</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#无语#">
+                            <span class="custom-select-option-label">无语</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#脸红#">
+                            <span class="custom-select-option-label">脸红</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#病娇#">
+                            <span class="custom-select-option-label">病娇</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#闭眼#">
+                            <span class="custom-select-option-label">闭眼</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#难受#">
+                            <span class="custom-select-option-label">难受</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#害怕#">
+                            <span class="custom-select-option-label">害怕</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#激动#">
+                            <span class="custom-select-option-label">激动</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#惊讶#">
+                            <span class="custom-select-option-label">惊讶</span>
+                        </div>
+                        <div class="custom-select-option" data-value="#哭泣#">
+                            <span class="custom-select-option-label">哭泣</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="button-group">
@@ -208,6 +365,12 @@
         const imagePreview = document.getElementById('imagePreview');
         const downloadBtn = document.getElementById('downloadBtn');
 
+        // 自定义下拉框元素
+        const customEmotionSelect = document.getElementById('customEmotionSelect');
+        const customEmotionDropdown = document.getElementById('customEmotionDropdown');
+        const customSelectText = customEmotionSelect.querySelector('.custom-select-text');
+        const customSelectOptions = customEmotionDropdown.querySelectorAll('.custom-select-option');
+
         let currentImageBlob = null;
 
         // 显示/隐藏消息
@@ -241,10 +404,66 @@
             }
         }
 
+        // 自定义下拉框功能
+        function initCustomSelect() {
+            // 点击下拉框打开/关闭
+            customEmotionSelect.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isActive = customEmotionSelect.classList.contains('active');
+                if (isActive) {
+                    closeCustomSelect();
+                } else {
+                    openCustomSelect();
+                }
+            });
+
+            // 选择选项
+            customSelectOptions.forEach(option => {
+                option.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const value = this.getAttribute('data-value');
+                    const label = this.querySelector('.custom-select-option-label').textContent;
+
+                    // 更新显示文本
+                    customSelectText.textContent = label;
+
+                    // 更新原生select的值
+                    emotionSelect.value = value;
+
+                    // 更新选中状态
+                    customSelectOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    // 关闭下拉框
+                    closeCustomSelect();
+                });
+            });
+
+            // 点击外部关闭下拉框
+            document.addEventListener('click', function (e) {
+                if (!customEmotionSelect.contains(e.target) && !customEmotionDropdown.contains(e.target)) {
+                    closeCustomSelect();
+                }
+            });
+        }
+
+        function openCustomSelect() {
+            customEmotionSelect.classList.add('active');
+            customEmotionDropdown.classList.add('show');
+        }
+
+        function closeCustomSelect() {
+            customEmotionSelect.classList.remove('active');
+            customEmotionDropdown.classList.remove('show');
+        }
+
         // 清空表单和结果
         function clearForm() {
             textInput.value = '';
             emotionSelect.value = '';
+            customSelectText.textContent = '默认表情';
+            customSelectOptions.forEach(opt => opt.classList.remove('selected'));
+            customSelectOptions[0].classList.add('selected');
             currentImageBlob = null;
             imagePreview.style.display = 'none';
             downloadBtn.style.display = 'none';
@@ -374,6 +593,7 @@
         // 页面加载完成后的初始化
         document.addEventListener('DOMContentLoaded', async function () {
             console.log('Anan\'s Sketchbook Generator 已加载');
+            initCustomSelect();
             await loadServerConfig();
             console.log('API 基础URL:', API_BASE_URL);
         });
