@@ -85,6 +85,10 @@ def _is_bracket_token(tok: str) -> bool:
     return tok.startswith("【") and tok.endswith("】")
 
 
+def _strip_color_brackets(s: str) -> str:
+    return s.replace("【", "").replace("】", "").replace("[", "").replace("]", "")
+
+
 def _split_long_token(draw: ImageDraw.ImageDraw, token: str, font: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     """
     将过长的 token 切成多个子 token，每个子 token 宽度 <= max_w（尽量）。
@@ -288,13 +292,11 @@ def parse_color_segments(
             if buf:
                 segs.append((buf, bracket_color if in_bracket else color))
                 buf = ""
-            segs.append((ch, bracket_color))
             in_bracket = True
         elif ch == "]" or ch == "】":
             if buf:
                 segs.append((buf, bracket_color))
                 buf = ""
-            segs.append((ch, bracket_color))
             in_bracket = False
         else:
             buf += ch
@@ -318,7 +320,7 @@ def measure_block(
     line_h = int((ascent + descent) * (1 + line_spacing))
     max_w = 0
     for ln in lines:
-        max_w = max(max_w, int(draw.textlength(ln, font=font)))
+        max_w = max(max_w, int(draw.textlength(_strip_color_brackets(ln), font=font)))
     total_h = max(line_h * max(1, len(lines)), 1)
     return max_w, total_h, line_h
 
@@ -411,7 +413,7 @@ def draw_text_auto(
     y = y_start
     in_bracket = False
     for ln in best_lines:
-        line_w = int(draw.textlength(ln, font=font))
+        line_w = int(draw.textlength(_strip_color_brackets(ln), font=font))
         if align == "left":
             x = x1
         elif align == "center":
